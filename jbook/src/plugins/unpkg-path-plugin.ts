@@ -1,4 +1,5 @@
 import * as esbuild from "esbuild-wasm";
+import axios from "axios";
 
 export const unpkgPathPlugin = () => {
   return {
@@ -20,12 +21,13 @@ export const unpkgPathPlugin = () => {
               console.log(message);
             `,
           };
-        } else {
-          return {
-            loader: "jsx",
-            contents: 'export default "hi there!"',
-          };
         }
+
+        const { data } = await axios.get(args.path);
+        return {
+          loader: "jsx",
+          contents: data,
+        };
       });
     },
   };
