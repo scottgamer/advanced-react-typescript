@@ -21,7 +21,10 @@ export const unpkgPathPlugin = () => {
           };
         }
 
-        return { namespace: "a", path: `https://unpkg.com/${args.path}` };
+        return {
+          namespace: "a",
+          path: `https://unpkg.com/${args.path}`,
+        };
       });
 
       build.onLoad({ filter: /.*/ }, async (args: any) => {
@@ -31,8 +34,8 @@ export const unpkgPathPlugin = () => {
           return {
             loader: "jsx",
             contents: `
-              import message from 'react';
-              console.log(message);
+              import React, { useState } from 'react';
+              console.log(React, useState);
             `,
           };
         }
