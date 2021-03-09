@@ -33,8 +33,6 @@ export const unpkgPathPlugin = (inputCode: string) => {
 
       // handle main file of a module
       build.onLoad({ filter: /.*/ }, async (args: any) => {
-        console.log("onLoad", args);
-
         if (args.path === "index.js") {
           return {
             loader: "jsx",
