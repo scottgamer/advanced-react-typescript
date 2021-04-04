@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import "./preview.css";
 interface PreviewProps {
   code: string;
+  bundlingStatus?: string;
 }
 
 const html = `
@@ -15,13 +16,19 @@ const html = `
       <body>
         <div id="root"></div>
         <script>
-          window.addEventListener('message', (event)=> {
+          const handleError = (err) => {
+            const root = document.querySelector("#root");
+            root.innerHTML = '<div style="color: red;"><h4>Runtime Error:</h4>' + error + '</div>';
+            console.error(error);
+          };
+          window.addEventListener('error', (event) => {
+            handleError(event.error);
+          });
+          window.addEventListener('message', (event) => {
             try{
-              eval(event.data)
+              eval(event.data);
             } catch(error){
-              const root = document.querySelector("#root");
-              root.innerHTML = '<div style="color: red;"><h4>Runtime Error:</h4>' + error + '</div>';
-              console.error(error);
+              handleError(error);
             }
           }, false);
         </script>
@@ -29,7 +36,7 @@ const html = `
     </html>
   `;
 
-const Preview = ({ code }: PreviewProps): JSX.Element => {
+const Preview = ({ code, bundlingStatus }: PreviewProps): JSX.Element => {
   const iframe = useRef<any>(null);
 
   useEffect(() => {
@@ -37,7 +44,9 @@ const Preview = ({ code }: PreviewProps): JSX.Element => {
       return;
     }
     iframe.current.srcdoc = html;
-    iframe.current.contentWindow.postMessage(code, "*");
+    setTimeout(() => {
+      iframe.current.contentWindow.postMessage(code, "*");
+    }, 50);
   }, [code]);
 
   return (
@@ -48,6 +57,7 @@ const Preview = ({ code }: PreviewProps): JSX.Element => {
         srcDoc={html}
         title="preview"
       />
+      {bundlingStatus && <div className="preview-error">{bundlingStatus}</div>}
     </div>
   );
 };
