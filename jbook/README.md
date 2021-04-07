@@ -38,3 +38,65 @@ parent.parentValue;
 ```
 
 - Accessing the child
+
+## Redux Configuration
+
+- redux manages 3 main components
+  - store
+  - actions
+  - reducers
+- the store will handle the global state of the application
+- the reducers will run a function to update/modify the state
+- the actions are the events to call each reducer
+- regarding actions, there will be the following levels
+  - action-types: enum with the name of the actions
+
+```typescript
+export enum ActionType {
+  MOVE_CELL = "move_cell",
+  DELETE_CELL = "delete_cell",
+  INSERT_CELL_BEFORE = "insert_cell_before",
+  UPDATE_CELL = "update_cell",
+}
+```
+
+- actions: define the action type and the payload to then dispatch an action
+
+```typescript
+import { ActionType } from "../action-types";
+
+interface MoveCellAction {
+  type: ActionType.MOVE_CELL;
+  payload: {
+    id: string;
+    direction: "up" | "down";
+  };
+}
+
+interface DeleteCellAction {
+  type: ActionType.DELETE_CELL;
+  payload: string;
+}
+
+interface InsertCellBeforeAction {
+  type: ActionType.INSERT_CELL_BEFORE;
+  payload: {
+    id: string;
+    type: "code" | "text";
+  };
+}
+
+interface UpdateCellAction {
+  type: ActionType.UPDATE_CELL;
+  payload: {
+    id: string;
+    content: string;
+  };
+}
+
+export type Action =
+  | MoveCellAction
+  | DeleteCellAction
+  | InsertCellBeforeAction
+  | UpdateCellAction;
+```
