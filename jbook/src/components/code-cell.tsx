@@ -4,15 +4,21 @@ import CodeEditor from "./code-editor";
 import Preview from "./preview";
 import bundle from "../bundler";
 import Resizable from "./resizable";
+import { Cell } from "../state";
+import { useActions } from "../hooks/use-actions";
 
-const CodeCell = () => {
+interface CodeCellProps {
+  cell: Cell;
+}
+
+const CodeCell = ({ cell }: CodeCellProps) => {
   const [code, setCode] = useState<string>("");
-  const [input, setInput] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const { updateCell } = useActions();
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-      const output = await bundle(input);
+      const output = await bundle(cell.content);
       setCode(output.code);
       setError(output.error);
     }, 1000);
@@ -20,13 +26,16 @@ const CodeCell = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [input]);
+  }, [cell.content]);
 
   return (
     <Resizable direction="vertical">
       <div style={{ height: "100%", display: "flex", flexDirection: "row" }}>
         <Resizable direction="horizontal">
-          <CodeEditor initialValue={""} onChange={(value) => setInput(value)} />
+          <CodeEditor
+            initialValue={cell.content}
+            onChange={(value) => updateCell(cell.id, value)}
+          />
         </Resizable>
 
         {/* This iframe uses the same origin policy */}
@@ -35,7 +44,7 @@ const CodeCell = () => {
         sandbox="allow-same-origin"
         title="child-iframe"
       /> */}
-        <Preview code={code} bundlingStatus={error}/>
+        <Preview code={code} bundlingStatus={error} />
       </div>
     </Resizable>
   );
