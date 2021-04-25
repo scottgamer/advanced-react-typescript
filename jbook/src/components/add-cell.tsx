@@ -10,9 +10,28 @@ const AddCell = ({ nextCellId }: AddCellProps): JSX.Element => {
   const { insertCellBefore } = useActions();
 
   return (
-    <div className="">
-      <button onClick={() => insertCellBefore(nextCellId, "code")}>Code</button>
-      <button onClick={() => insertCellBefore(nextCellId, "text")}>Text</button>
+    <div className="add-cell">
+      <div className="add-buttons">
+        <button
+          className="button is-rounded is-primary is-small"
+          onClick={() => insertCellBefore(nextCellId, "code")}
+        >
+          <span className="icon is-small">
+            <i className="fas fa-plus" />
+          </span>
+          <span>Code</span>
+        </button>
+        <button
+          className="button is-rounded is-primary is-small"
+          onClick={() => insertCellBefore(nextCellId, "text")}
+        >
+          <span className="icon is-small">
+            <i className="fas fa-plus" />
+          </span>
+          <span> Text</span>
+        </button>
+      </div>
+      <div className="divider"></div>
     </div>
   );
 };
