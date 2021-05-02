@@ -3,18 +3,18 @@ import { useActions } from "../hooks/use-actions";
 import "./add-cell.css";
 
 interface AddCellProps {
-  nextCellId: string | null;
+  prevCellId: string | null;
 }
 
-const AddCell = ({ nextCellId }: AddCellProps): JSX.Element => {
-  const { insertCellBefore } = useActions();
+const AddCell = ({ prevCellId }: AddCellProps): JSX.Element => {
+  const { insertCellAfter } = useActions();
 
   return (
     <div className="add-cell">
       <div className="add-buttons">
         <button
           className="button is-rounded is-primary is-small"
-          onClick={() => insertCellBefore(nextCellId, "code")}
+          onClick={() => insertCellAfter(prevCellId, "code")}
         >
           <span className="icon is-small">
             <i className="fas fa-plus" />
@@ -23,7 +23,7 @@ const AddCell = ({ nextCellId }: AddCellProps): JSX.Element => {
         </button>
         <button
           className="button is-rounded is-primary is-small"
-          onClick={() => insertCellBefore(nextCellId, "text")}
+          onClick={() => insertCellAfter(prevCellId, "text")}
         >
           <span className="icon is-small">
             <i className="fas fa-plus" />
