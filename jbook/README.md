@@ -22,3 +22,29 @@ To initialize the project run the command:
 - Install using lerna with `lerna add`
 
 - To add a package run `lerna add [module_name] --scope=[package_name]`
+
+## Adding Typescript
+
+- Install the TSC module `lerna add typescript --dev --scope=local-api`
+- Create the tsconfig.json file `npx typescript --init`
+- In the `tsconfig.json` file, set the following properties:
+
+```json
+{
+  "declaration": true,
+  "outDir": "./dist"
+}
+```
+
+- Add the following entries to the `package.json` file:
+
+```json
+{
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc --watch --preserveWatchOutput"
+  }
+}
+```
