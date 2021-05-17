@@ -1,4 +1,5 @@
 import { Dispatch } from "redux";
+import axios from "axios";
 import {
   DeleteCellAction,
   Direction,
@@ -9,9 +10,10 @@ import {
 } from "../actions";
 
 import { ActionType } from "../action-types";
-import { CellTypes } from "../cell";
+import { Cell, CellTypes } from "../cell";
 
 import bundle from "../../bundler";
+import { RootState } from "../reducers";
 
 export const updateCell = (id: string, content: string): UpdateCellAction => {
   return {
@@ -71,5 +73,36 @@ export const createBundle = (cellId: string, input: string) => {
         },
       },
     });
+  };
+};
+
+export const fetchCells = () => {
+  return async (dispatch: Dispatch<Action>) => {
+    dispatch({ type: ActionType.FETCH_CELLS });
+
+    try {
+      const { data }: { data: Cell[] } = await axios.get("/cells");
+      dispatch({ type: ActionType.FETCH_CELLS_COMPLETE, payload: data });
+    } catch (error) {
+      dispatch({ type: ActionType.FETCH_CELLS_ERROR, payload: error.message });
+    }
+  };
+};
+
+export const saveCells = () => {
+  // getState will return the current state of the store
+  return async (dispatch: Dispatch<Action>, getState: () => RootState) => {
+    const state = getState();
+    if (state.cells) {
+      const {
+        cells: { data, order },
+      } = state;
+      const cells = order.map((id) => data[id]);
+      try {
+        await axios.post("/cells", { cells });
+      } catch (error) {
+        dispatch({ type: ActionType.SAVE_CELLS_ERROR, payload: error.message });
+      }
+    }
   };
 };
